@@ -7,12 +7,18 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
 
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
+    volumes:
+      - .:/myproject
     depends_on:
       - db
     environment:
@@ -21,3 +27,11 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: db
       DB_PORT: 5432
+    networks:
+      - mynetwork
+
+volumes:
+  postgres_data:
+
+networks:
+  mynetwork:
